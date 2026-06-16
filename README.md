@@ -2,10 +2,10 @@
 
 A codebase-aware RAG (Retrieval-Augmented Generation) assistant. Point it at any
 public GitHub repository and ask engineering questions in plain English —
-*"Where is the payment logic?"*, *"How do I add a new API endpoint following
-the existing pattern?"* — and get back an answer grounded in the actual code,
+_"Where is the payment logic?"_, _"How do I add a new API endpoint following
+the existing pattern?"_ — and get back an answer grounded in the actual code,
 with file-level citations and similarity scores.
-
+DevDocs@08123
 Built from scratch (no LlamaIndex/LangChain RAG abstractions) to understand
 every layer of a retrieval pipeline: chunking, embeddings, vector search, and
 grounded generation.
@@ -49,7 +49,7 @@ GitHub repo URL
 - **Any public GitHub repo** — paste a URL, it fetches, chunks, embeds, and
   indexes the whole thing in seconds (async fetch with bounded concurrency).
 - **Grounded answers, not hallucinations** — the LLM is instructed to answer
-  *only* from retrieved chunks, and every answer comes with the source files
+  _only_ from retrieved chunks, and every answer comes with the source files
   and cosine-similarity scores that produced it.
 - **Streaming responses** — `/query/stream` streams tokens via SSE so answers
   appear incrementally instead of after a multi-second wait.
@@ -62,14 +62,14 @@ GitHub repo URL
 
 ## Tech stack
 
-| Layer            | Tool                              | Why                                                        |
-| ----------------- | ---------------------------------- | ----------------------------------------------------------- |
-| Backend           | Python + FastAPI                   | Async-friendly, fast to iterate, automatic OpenAPI docs    |
-| Vector database   | PostgreSQL + pgvector              | One database for app data and vectors, no extra infra     |
-| Embeddings        | sentence-transformers (MiniLM-L6)  | Runs locally, no API key, 384-dim, fast enough for dev     |
-| LLM (generation)  | Groq — llama-3.3-70b-versatile     | LPU inference, ~300ms responses, generous free tier        |
-| Evaluation        | Custom LLM-as-judge (RAGAS-style)  | Faithfulness / relevancy / context-recall scoring          |
-| Frontend          | Next.js 16 + Tailwind + Framer Motion | Familiar, fast to build a polished UI                   |
+| Layer            | Tool                                  | Why                                                     |
+| ---------------- | ------------------------------------- | ------------------------------------------------------- |
+| Backend          | Python + FastAPI                      | Async-friendly, fast to iterate, automatic OpenAPI docs |
+| Vector database  | PostgreSQL + pgvector                 | One database for app data and vectors, no extra infra   |
+| Embeddings       | sentence-transformers (MiniLM-L6)     | Runs locally, no API key, 384-dim, fast enough for dev  |
+| LLM (generation) | Groq — llama-3.3-70b-versatile        | LPU inference, ~300ms responses, generous free tier     |
+| Evaluation       | Custom LLM-as-judge (RAGAS-style)     | Faithfulness / relevancy / context-recall scoring       |
+| Frontend         | Next.js 16 + Tailwind + Framer Motion | Familiar, fast to build a polished UI                   |
 
 ## Project structure
 
@@ -134,7 +134,7 @@ Open `http://localhost:3000`.
 ### Try it
 
 1. Paste a GitHub URL (e.g. `https://github.com/pallets/flask`) and index it.
-2. Ask a question — e.g. *"How do I create a blueprint in Flask?"*
+2. Ask a question — e.g. _"How do I create a blueprint in Flask?"_
 3. Read the answer plus the cited files and similarity scores.
 
 ## Deployment
