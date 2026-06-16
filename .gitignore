@@ -1,0 +1,28 @@
+# --- Python / backend ---
+backend/venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# --- Node / frontend ---
+frontend/node_modules/
+frontend/.next/
+frontend/test-results/
+frontend/next-env.d.ts
+*.tsbuildinfo
+
+# --- Env / secrets ---
+.env
+.env.local
+.env.*.local
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# --- Logs ---
+*.log
+npm-debug.log*
