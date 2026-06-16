@@ -139,19 +139,48 @@ Open `http://localhost:3000`.
 
 ## Deployment
 
-Not deployed yet — these are the intended paths (require your own accounts/credentials):
+Backend on **Render**, frontend on **Vercel** (no Docker required for either —
+Render builds the Python app natively via `render.yaml`).
 
-- **Frontend** → [Vercel](https://vercel.com): import the repo, set the root
-  directory to `frontend/`, and set `NEXT_PUBLIC_API_URL` to the deployed
-  backend URL.
-- **Backend** → any host that runs a Dockerfile (Render, Railway, Fly.io):
-  point it at `backend/Dockerfile`, set `GITHUB_TOKEN`, `DATABASE_URL`,
-  `GROQ_API_KEY` as environment variables, and update the CORS
-  `allow_origins` in `app/main.py` to the deployed frontend URL.
-- **Database** → a managed Postgres with the pgvector extension enabled
-  (e.g. Neon, Supabase, or Render Postgres all support it) — point
-  `DATABASE_URL` at it and re-run the `CREATE EXTENSION vector` /
-  `CREATE TABLE chunks` steps from [Entry 4 of the journal](./JOURNAL.md#entry-4--vector-storage--semantic-search).
+### 1. Database — managed Postgres with pgvector
+
+Use [Render Postgres](https://render.com/docs/postgresql) (pgvector is
+supported out of the box) or [Neon](https://neon.tech)/[Supabase](https://supabase.com)
+if you'd rather keep it separate from the app host. Once created, connect to
+it and re-run the `CREATE EXTENSION vector` / `CREATE TABLE chunks` steps from
+[Entry 4 of the journal](./JOURNAL.md#entry-4--vector-storage--semantic-search).
+Keep the resulting connection string for the next step.
+
+### 2. Backend — Render
+
+1. Push this repo to GitHub (done ✅).
+2. In Render: **New → Blueprint**, point it at the repo — it will pick up
+   [`render.yaml`](./render.yaml) and configure the service automatically
+   (root dir `backend`, `pip install -r requirements.txt`,
+   `uvicorn app.main:app --host 0.0.0.0 --port $PORT`).
+   - Alternatively, **New → Web Service** manually with those same settings
+     if you'd rather not use the blueprint.
+3. Set the environment variables Render prompts for (marked `sync: false`
+   in `render.yaml`): `GITHUB_TOKEN`, `DATABASE_URL`, `GROQ_API_KEY`. Leave
+   `ALLOWED_ORIGINS` for step 4.
+4. Deploy. Note the resulting URL, e.g. `https://devdocs-ai-backend.onrender.com`.
+
+### 3. Frontend — Vercel
+
+1. Import the repo into Vercel, set **root directory** to `frontend/`.
+2. Add env var `NEXT_PUBLIC_API_URL` = your Render backend URL from step 2.
+3. Deploy. Note the resulting URL, e.g. `https://devdocs-ai.vercel.app`.
+
+### 4. Close the loop — CORS
+
+Back in Render, set `ALLOWED_ORIGINS` on the backend service to your Vercel
+URL (comma-separate multiple origins, e.g. to keep `localhost:3000` working
+too: `https://devdocs-ai.vercel.app,http://localhost:3000`) and redeploy.
+`app/main.py` reads this env var directly — no code change needed.
+
+> Render's free tier spins the service down when idle, so the first request
+> after a period of inactivity (and the first request after any deploy, since
+> the embedding model has to load) will be slow — this is expected, not a bug.
 
 ## Evaluation
 

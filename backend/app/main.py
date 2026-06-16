@@ -18,9 +18,16 @@ load_dotenv()
 
 app = FastAPI(title="DevDocs AI", version="1.0.0")
 
+# Comma-separated list, e.g. "http://localhost:3000,https://your-app.vercel.app"
+allowed_origins = [
+    origin.strip()
+    for origin in os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
+    if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=allowed_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
